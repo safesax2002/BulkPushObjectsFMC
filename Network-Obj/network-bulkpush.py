@@ -27,25 +27,30 @@ refreshtoken = response.headers["X-auth-refresh-token"]
 DOMAIN_UUID = response.headers["DOMAIN_UUID"]
 
 
-host,ranges,network = cf.csvtojson(csvFilePath)
+host,ranges,network,fqdn = cf.csvtojson(csvFilePath)
 
 host_payload = json.dumps(host)
 range_payload = json.dumps(ranges)
 network_payload = json.dumps(network)
+fqdn_payload = json.dumps(fqdn)
 
 host_api_uri = "/api/fmc_config/v1/domain/" + DOMAIN_UUID + "/object/hosts?bulk=true"
 range_api_uri = "/api/fmc_config/v1/domain/" + DOMAIN_UUID + "/object/ranges?bulk=true"
 network_api_uri = "/api/fmc_config/v1/domain/" + DOMAIN_UUID + "/object/networks?bulk=true"
+fqdn_api_uri = "/api/fmc_config/v1/domain/" + DOMAIN_UUID + "/object/fqdns?bulk=true"
 
 
 host_url = "https://" + addr + host_api_uri
-range_url = "https://" + addr + range_api_uri
 network_url = "https://" + addr + network_api_uri
+range_url = "https://" + addr + range_api_uri
+fqdn_url = "https://" + addr + fqdn_api_uri
 
 headers = {
   'Content-Type': 'application/json',
   'x-auth-access-token': accesstoken
 }
+
+logfile = "log_"+ str(time.perf_counter_ns()) + ".txt"
 
 if host != []:
     response = requests.request("POST", host_url, headers=headers, data = host_payload, verify = False)
@@ -56,7 +61,6 @@ if host != []:
     else:
         print("Host Object creation failed")
 
-    logfile = "log_"+ str(time.perf_counter_ns()) + ".txt"
 
     log = open(logfile,"w+")
     log.write(response.text)
@@ -84,6 +88,20 @@ if network != []:
 
     else:
         print("Network Object creation failed")
+
+
+    log = open(logfile,"a+")
+    log.write(response.text)
+    log.close
+    
+if fqdn != []:
+    response = requests.request("POST", fqdn_url, headers=headers, data = fqdn_payload, verify = False)
+
+    if response.status_code == 201 or response.status_code == 202:
+        print("FQDN Objects successfully pushed")
+
+    else:
+        print("FQDN Object creation failed")
 
 
     log = open(logfile,"a+")
