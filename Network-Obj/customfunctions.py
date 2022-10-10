@@ -12,6 +12,7 @@ def csvtojson(csvFilePath):
     host = []
     ranges = []
     network = []
+    fqdn = []
 
     with open(csvFilePath, encoding='utf-8-sig') as csvf:
         csvReader = csv.DictReader(csvf)
@@ -23,5 +24,6 @@ def csvtojson(csvFilePath):
                 ranges.append(rows)
             if rows['type'] == "Network":
                 network.append(rows)
-
-    return host,ranges,network
+            if rows['type'] == "FQDN":
+                fqdn.append(rows)
+    return host,ranges,network,fqdn
