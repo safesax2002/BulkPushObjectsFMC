@@ -42,13 +42,15 @@ This script also provides you with a log file in the same folder with success an
 
 ### Network Objects Bulk Push
  
- This API workflow can push all three types of network objects in bulk to the FMC:
+ This API workflow can push all four types of network objects in bulk to the FMC:
  
  - Host objects
   
  - Network Objects
   
  - Range Objects
+
+ - FQDN Objects
 
 Fill the CSV file with required input and run the "network-bulkpush.py"
 
